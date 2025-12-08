@@ -1,0 +1,353 @@
+@use "./base.scss";
+
+// Custom styling to match original blog aesthetic
+
+// Cleaner page layout
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+
+  article {
+    max-width: 800px;
+    line-height: 1.6;
+  }
+}
+
+// Simpler, cleaner typography
+body {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: normal;
+}
+
+// Simpler link styling - underline instead of highlight background
+a.internal {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--lightgray);
+  padding: 0;
+
+  &:hover {
+    border-bottom-color: var(--secondary);
+  }
+}
+
+// Tag links simpler
+a.internal.tag-link {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--lightgray);
+
+  &:hover {
+    border-bottom-color: var(--secondary);
+  }
+}
+
+// Cleaner hr styling
+hr {
+  border: none;
+  border-top: 1px solid var(--lightgray);
+  margin: 2rem auto;
+  max-width: 80%;
+  opacity: 0.6;
+}
+
+// Page header styling
+.page-header {
+  margin-bottom: 2rem;
+
+  h1.article-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+
+    &::before {
+      content: "> ";
+      color: var(--gray);
+    }
+  }
+
+  .content-meta {
+    color: var(--gray);
+    font-size: 0.9rem;
+
+    span::before {
+      content: " | ";
+      margin: 0 0.5rem;
+    }
+
+    span:first-child::before {
+      content: "";
+      margin: 0;
+    }
+  }
+}
+
+// Breadcrumb styling - use / instead of ❯
+.breadcrumb-container {
+  .breadcrumb-element p {
+    &::before {
+      content: " / ";
+    }
+
+    &:first-child::before {
+      content: "";
+    }
+  }
+}
+
+// Hide site header globally
+.center header {
+  display: none !important;
+}
+
+// Home page specific styling - HIDE ALL QUARTZ UI
+.page[data-slug="index"] {
+  // Hide sidebars completely
+  .left, .right {
+    display: none !important;
+  }
+
+  // Hide page metadata (date, read time)
+  .content-meta {
+    display: none !important;
+  }
+
+  // Hide breadcrumbs
+  .breadcrumb-container {
+    display: none !important;
+  }
+
+  // Make center content full width
+  .center {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 2rem 1rem;
+  }
+
+  // Hide the page title (we'll use custom HTML instead)
+  .page-header {
+    display: none !important;
+  }
+
+  // Hide the redundant page title that appears after header
+  article > h1:first-of-type {
+    display: none !important;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  p strong {
+    font-weight: 400;
+    color: var(--gray);
+  }
+
+  // Links in one line separated by ·
+  p a {
+    margin: 0 0.5rem;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &::after {
+      content: " ·";
+      color: var(--gray);
+    }
+
+    &:last-of-type::after {
+      content: "";
+    }
+  }
+}
+
+// Hide external link icons globally in profile section
+.profile-section .external-icon {
+  display: none !important;
+}
+
+// Profile section styling
+.profile-section {
+  display: flex !important;
+  flex-direction: row !important; // Force horizontal layout
+  align-items: flex-start !important;
+  gap: 2rem !important;
+  margin-bottom: 3rem !important;
+  max-width: 100% !important;
+
+  .profile-image {
+    width: 160px !important;
+    height: 160px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+  }
+
+  .profile-info {
+    flex: 1 !important;
+    min-width: 0 !important; // Prevent flex item from overflowing
+    display: block !important;
+    max-width: 100% !important;
+
+    h1 {
+      font-size: 2.5rem !important;
+      margin: 0 0 0.5rem 0 !important;
+      font-weight: 600 !important;
+      display: block !important;
+      white-space: normal !important;
+      overflow-wrap: normal !important;
+      word-break: normal !important;
+      width: 100% !important;
+    }
+
+    .subtitle {
+      color: var(--gray) !important;
+      font-size: 1.1rem !important;
+      margin: 0 0 1rem 0 !important;
+      display: block !important;
+      white-space: normal !important;
+      overflow-wrap: normal !important;
+      word-break: normal !important;
+      width: 100% !important;
+    }
+
+    .social-links {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 1rem !important;
+      flex-wrap: nowrap !important;
+
+      a {
+        color: var(--darkgray) !important;
+        transition: color 0.2s !important;
+        border-bottom: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+
+        &:hover {
+          color: var(--secondary) !important;
+        }
+
+        svg:not(.external-icon) {
+          display: block !important;
+          width: 20px !important;
+          height: 20px !important;
+        }
+      }
+    }
+  }
+
+  // Only stack vertically on very small mobile screens
+  @media (max-width: 480px) {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+
+    .profile-info {
+      .social-links {
+        justify-content: center !important;
+      }
+    }
+  }
+}
+
+// Featured posts section styling
+.page[data-slug="index"] {
+  h2 {
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem 0;
+
+    // Remove emoji if present
+    &::before {
+      content: "";
+    }
+  }
+
+  // Style featured posts list
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 0.5rem 0;
+
+      strong {
+        font-weight: 600;
+        color: var(--darkgray);
+      }
+    }
+  }
+}
+
+// Image styling
+article img {
+  max-height: 400px;
+  width: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 4px;
+}
+
+// Code block improvements
+pre {
+  border-radius: 6px;
+  border: 1px solid var(--lightgray);
+}
+
+// Footnotes styling
+.footnotes {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--lightgray);
+  font-size: 0.9rem;
+
+  ol {
+    padding-left: 1.5rem;
+  }
+}
+
+// Explorer sidebar - make it less prominent
+.explorer {
+  .folder-button {
+    font-size: 0.9rem;
+  }
+}
+
+// Hide some Quartz default components for cleaner look
+.darkmode, .readermode {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Artifacts page styling
+.page[data-slug="artifacts"] {
+  h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+
+    &::before {
+      content: "";
+    }
+  }
+
+  img {
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    margin: 0.5rem 0 1rem;
+  }
+
+  ul {
+    margin: 0.5rem 0 1.5rem;
+    padding-left: 1.5rem;
+  }
+}
