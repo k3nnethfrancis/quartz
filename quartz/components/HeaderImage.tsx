@@ -16,6 +16,7 @@ HeaderImage.css = `
   width: 100%;
   max-height: 400px;
   object-fit: cover;
+  object-position: bottom;
   margin-bottom: 2rem;
   border: 1px solid var(--dark);
 }
