@@ -57,9 +57,10 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ConditionalRender({
       component: Component.Explorer({
         mapFn: (node) => {
-          // Remove "The " prefix from display names
+          // Remove "The " prefix from display names and capitalize first letter
           if (node.displayName.startsWith("The ")) {
-            node.displayName = node.displayName.slice(4)
+            const rest = node.displayName.slice(4)
+            node.displayName = rest.charAt(0).toUpperCase() + rest.slice(1)
           }
         },
       }),
@@ -99,9 +100,10 @@ export const defaultListPageLayout: PageLayout = {
     }),
     Component.Explorer({
       mapFn: (node) => {
-        // Remove "The " prefix from display names
+        // Remove "The " prefix from display names and capitalize first letter
         if (node.displayName.startsWith("The ")) {
-          node.displayName = node.displayName.slice(4)
+          const rest = node.displayName.slice(4)
+          node.displayName = rest.charAt(0).toUpperCase() + rest.slice(1)
         }
       },
     }),
