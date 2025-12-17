@@ -1,11 +1,15 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import { pathToRoot } from "../util/path"
 
 const HeaderImage: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   const image = fileData.frontmatter?.image
   const title = fileData.frontmatter?.title || "Header image"
 
   if (image) {
-    return <img src={image} alt={title} class="header-image" />
+    const baseDir = pathToRoot(fileData.slug!)
+    // Handle both absolute and relative image paths
+    const imageSrc = image.startsWith("/") ? baseDir + image : image
+    return <img src={imageSrc} alt={title} class="header-image" />
   } else {
     return null
   }
