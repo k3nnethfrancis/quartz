@@ -57,6 +57,21 @@ type Props = {
   sort?: SortFn
 } & QuartzComponentProps
 
+// Format title for list display: strip after colon, remove leading "The"
+function formatListTitle(title: string | undefined): string {
+  if (!title) return ""
+  let formatted = title
+  // Take only the part before the colon
+  if (formatted.includes(":")) {
+    formatted = formatted.split(":")[0].trim()
+  }
+  // Remove leading "The " (case-insensitive)
+  if (formatted.toLowerCase().startsWith("the ")) {
+    formatted = formatted.slice(4)
+  }
+  return formatted
+}
+
 export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort }: Props) => {
   const sorter = sort ?? byDateAndAlphabeticalFolderFirst(cfg)
   let list = allFiles.sort(sorter)
@@ -79,7 +94,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
               <div class="desc">
                 <h3>
                   <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
-                    {title}
+                    {formatListTitle(title)}
                   </a>
                 </h3>
               </div>
