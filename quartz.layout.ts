@@ -55,7 +55,14 @@ export const defaultContentPageLayout: PageLayout = {
       ],
     }),
     Component.ConditionalRender({
-      component: Component.Explorer(),
+      component: Component.Explorer({
+        mapFn: (node) => {
+          // Remove "The " prefix from display names
+          if (node.displayName.startsWith("The ")) {
+            node.displayName = node.displayName.slice(4)
+          }
+        },
+      }),
       condition: (page) => page.fileData.slug !== "index",
     }),
   ],
@@ -90,7 +97,14 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      mapFn: (node) => {
+        // Remove "The " prefix from display names
+        if (node.displayName.startsWith("The ")) {
+          node.displayName = node.displayName.slice(4)
+        }
+      },
+    }),
   ],
   right: [],
 }
