@@ -239,7 +239,7 @@ hr {
 .profile-section {
   display: flex !important;
   flex-direction: row !important; // Force horizontal layout
-  align-items: center !important;
+  align-items: flex-start !important;
   gap: 2rem !important;
   margin-bottom: 3rem !important;
   max-width: 100% !important;
