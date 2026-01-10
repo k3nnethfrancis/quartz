@@ -7,10 +7,7 @@ export const sharedPageComponents: SharedLayout = {
   header: [],
   afterBody: [],
   footer: Component.Footer({
-    links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
-    },
+    links: {},
   }),
 }
 
@@ -35,10 +32,7 @@ export const defaultContentPageLayout: PageLayout = {
     }),
   ],
   left: [
-    Component.ConditionalRender({
-      component: Component.PageTitle(),
-      condition: (page) => page.fileData.slug !== "index",
-    }),
+    Component.PageTitle(),
     Component.MobileOnly(Component.Spacer()),
     Component.Flex({
       components: [
@@ -57,6 +51,31 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ConditionalRender({
       component: Component.Explorer(),
       condition: (page) => page.fileData.slug !== "index",
+    }),
+    Component.ConditionalRender({
+      component: Component.RecentNotes({
+        title: "Recent Logs",
+        limit: 3,
+        showTags: false,
+        linkToMore: "research/logs/" as any,
+        filter: (f) => f.slug?.startsWith("research/logs/") && !f.slug?.endsWith("/index"),
+      }),
+      condition: (page) => page.fileData.slug === "index",
+    }),
+    Component.ConditionalRender({
+      component: Component.RecentNotes({
+        title: "Recent Notes",
+        limit: 3,
+        showTags: false,
+        linkToMore: "research/notes/" as any,
+        filter: (f) => f.slug?.startsWith("research/notes/") && !f.slug?.endsWith("/index"),
+        sort: (a, b) => {
+          const aDate = a.frontmatter?.modified ?? a.frontmatter?.created ?? ""
+          const bDate = b.frontmatter?.modified ?? b.frontmatter?.created ?? ""
+          return bDate.localeCompare(aDate) // descending (newest first)
+        },
+      }),
+      condition: (page) => page.fileData.slug === "index",
     }),
   ],
   right: [
