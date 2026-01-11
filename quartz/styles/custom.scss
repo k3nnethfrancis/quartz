@@ -160,11 +160,13 @@ hr {
   display: none !important;
 }
 
-// Home page specific styling - HIDE ALL QUARTZ UI
+// Home page specific styling
 .page[data-slug="index"] {
-  // Hide sidebars completely
-  .left, .right {
-    display: none !important;
+  // Hide sidebars on mobile only
+  @media (max-width: 1200px) {
+    .left, .right {
+      display: none !important;
+    }
   }
 
   // Hide page metadata (date, read time)
