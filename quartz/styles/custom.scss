@@ -230,6 +230,35 @@ hr {
       content: "";
     }
   }
+
+  // Make Recent sections collapsible on home page
+  .sidebar.left .recent-notes {
+    // Style as collapsible section
+    & > h3 {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      user-select: none;
+
+      &::before {
+        content: "▼";
+        font-size: 0.6rem;
+        margin-right: 0.5rem;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    &.collapsed {
+      & > h3::before {
+        transform: rotate(-90deg);
+      }
+
+      & > ul.recent-ul,
+      & > p {
+        display: none;
+      }
+    }
+  }
 }
 
 // Hide external link icons globally in profile section

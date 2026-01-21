@@ -222,6 +222,8 @@ a {
       display: flex;
       height: 100vh;
       position: sticky;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     & .sidebar.left {
@@ -237,6 +239,7 @@ a {
         flex-direction: row;
         padding: 0;
         padding-top: 2rem;
+        overflow: visible;
       }
     }
 
