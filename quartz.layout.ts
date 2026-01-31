@@ -1,5 +1,24 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { FileTrieNode } from "./quartz/util/fileTrie"
+
+// Sort by date (newest first), folders first, then alphabetical fallback
+const sortByDate = (a: FileTrieNode, b: FileTrieNode) => {
+  // Folders first
+  if (a.isFolder && !b.isFolder) return -1
+  if (!a.isFolder && b.isFolder) return 1
+
+  // Both files or both folders: sort by date (descending)
+  const aDate = a.data?.date?.getTime() ?? 0
+  const bDate = b.data?.date?.getTime() ?? 0
+  if (aDate !== bDate) return bDate - aDate
+
+  // Fallback to alphabetical
+  return a.displayName.localeCompare(b.displayName, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  })
+}
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
@@ -45,11 +64,11 @@ export const defaultContentPageLayout: PageLayout = {
       ],
     }),
     Component.ConditionalRender({
-      component: Component.Explorer({ folderDefaultState: "collapsed" }),
+      component: Component.Explorer({ folderDefaultState: "collapsed", sortFn: sortByDate }),
       condition: (page) => page.fileData.slug === "index",
     }),
     Component.ConditionalRender({
-      component: Component.Explorer(),
+      component: Component.Explorer({ sortFn: sortByDate }),
       condition: (page) => page.fileData.slug !== "index",
     }),
     Component.ConditionalRender({
@@ -110,7 +129,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({ sortFn: sortByDate }),
   ],
   right: [],
 }
