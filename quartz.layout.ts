@@ -2,19 +2,26 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { FileTrieNode } from "./quartz/util/fileTrie"
 
-// Sort by date (newest first), folders first, then alphabetical fallback
+// Sort folders alphabetically, files by date (newest first)
 const sortByDate = (a: FileTrieNode, b: FileTrieNode) => {
-  // Folders first
+  // Folders come before files
   if (a.isFolder && !b.isFolder) return -1
   if (!a.isFolder && b.isFolder) return 1
 
-  // Both files or both folders: sort by date (descending)
-  // Date is serialized as ISO string in contentIndex.json
+  // Both are folders: sort alphabetically
+  if (a.isFolder && b.isFolder) {
+    return a.displayName.localeCompare(b.displayName, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  }
+
+  // Both are files: sort by date (descending), then alphabetically
   const aDate = a.data?.date ? new Date(a.data.date as unknown as string).getTime() : 0
   const bDate = b.data?.date ? new Date(b.data.date as unknown as string).getTime() : 0
   if (aDate !== bDate) return bDate - aDate
 
-  // Fallback to alphabetical
+  // Fallback to alphabetical for files with same/no date
   return a.displayName.localeCompare(b.displayName, undefined, {
     numeric: true,
     sensitivity: "base",
