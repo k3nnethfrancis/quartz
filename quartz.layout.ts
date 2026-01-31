@@ -9,8 +9,9 @@ const sortByDate = (a: FileTrieNode, b: FileTrieNode) => {
   if (!a.isFolder && b.isFolder) return 1
 
   // Both files or both folders: sort by date (descending)
-  const aDate = a.data?.date?.getTime() ?? 0
-  const bDate = b.data?.date?.getTime() ?? 0
+  // Date is serialized as ISO string in contentIndex.json
+  const aDate = a.data?.date ? new Date(a.data.date as unknown as string).getTime() : 0
+  const bDate = b.data?.date ? new Date(b.data.date as unknown as string).getTime() : 0
   if (aDate !== bDate) return bDate - aDate
 
   // Fallback to alphabetical
