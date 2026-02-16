@@ -1,0 +1,47 @@
+.font-toggle {
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  background: none;
+  border: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  text-align: inherit;
+  flex-shrink: 0;
+
+  & svg {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: calc(50% - 10px);
+    stroke: var(--darkgray);
+    transition: opacity 0.1s ease;
+  }
+}
+
+// Default state: coder mode, show mono icon
+:root .font-toggle {
+  & > .mono-icon {
+    display: inline;
+  }
+  & > .serif-icon {
+    display: none;
+  }
+}
+
+// Reader state: show serif icon
+:root[saved-font="reader"] .font-toggle {
+  & > .mono-icon {
+    display: none;
+  }
+  & > .serif-icon {
+    display: inline;
+  }
+}
+
+// Swap body + header font in reader mode
+:root[saved-font="reader"] {
+  --bodyFont: "Libre Baskerville", Baskerville, Georgia, serif;
+  --headerFont: "Libre Baskerville", Baskerville, Georgia, serif;
+}

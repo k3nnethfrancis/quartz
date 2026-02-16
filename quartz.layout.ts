@@ -2,6 +2,13 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { FileTrieNode } from "./quartz/util/fileTrie"
 
+// Replace dashes with spaces in folder display names
+const cleanFolderNames = (node: FileTrieNode) => {
+  if (node.isFolder) {
+    node.displayName = node.displayName.replace(/-/g, " ")
+  }
+}
+
 // Sort folders alphabetically, files by date (newest first)
 const sortByDate = (a: FileTrieNode, b: FileTrieNode) => {
   // Folders come before files
@@ -68,15 +75,16 @@ export const defaultContentPageLayout: PageLayout = {
           grow: true,
         },
         { Component: Component.Darkmode() },
+        { Component: Component.FontToggle() },
         { Component: Component.ReaderMode() },
       ],
     }),
     Component.ConditionalRender({
-      component: Component.Explorer({ folderDefaultState: "collapsed", sortFn: sortByDate }),
+      component: Component.Explorer({ folderDefaultState: "collapsed", sortFn: sortByDate, mapFn: cleanFolderNames }),
       condition: (page) => page.fileData.slug === "index",
     }),
     Component.ConditionalRender({
-      component: Component.Explorer({ sortFn: sortByDate }),
+      component: Component.Explorer({ sortFn: sortByDate, mapFn: cleanFolderNames }),
       condition: (page) => page.fileData.slug !== "index",
     }),
     Component.ConditionalRender({
@@ -135,9 +143,10 @@ export const defaultListPageLayout: PageLayout = {
           grow: true,
         },
         { Component: Component.Darkmode() },
+        { Component: Component.FontToggle() },
       ],
     }),
-    Component.Explorer({ sortFn: sortByDate }),
+    Component.Explorer({ sortFn: sortByDate, mapFn: cleanFolderNames }),
   ],
   right: [],
 }
