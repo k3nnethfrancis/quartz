@@ -4,6 +4,7 @@ import { resolveRelative, simplifySlug } from "../util/path"
 import { i18n } from "../i18n"
 import { classNames } from "../util/lang"
 import OverflowListFactory from "./OverflowList"
+import { isPreview } from "../util/visibility"
 
 interface BacklinksOptions {
   hideWhenEmpty: boolean
@@ -24,8 +25,9 @@ export default ((opts?: Partial<BacklinksOptions>) => {
     cfg,
   }: QuartzComponentProps) => {
     const slug = simplifySlug(fileData.slug!)
-    const backlinkFiles = allFiles.filter((file) =>
-      file.links?.includes(slug) && simplifySlug(file.slug!) !== "/"
+    const backlinkFiles = allFiles.filter(
+      (file) =>
+        !isPreview(file) && file.links?.includes(slug) && simplifySlug(file.slug!) !== "/",
     )
     if (options.hideWhenEmpty && backlinkFiles.length == 0) {
       return null

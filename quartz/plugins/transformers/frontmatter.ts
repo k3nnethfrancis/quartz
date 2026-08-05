@@ -144,9 +144,11 @@ declare module "vfile" {
         created: string
         published: string
         description: string
+        image: string
         socialDescription: string
         publish: boolean | string
         draft: boolean | string
+        preview: boolean | string
         lang: string
         enableToc: string
         cssclasses: string[]

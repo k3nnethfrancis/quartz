@@ -1,6 +1,7 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import { FileTrieNode } from "./quartz/util/fileTrie"
+import { isPreviewPath } from "./quartz/util/visibility"
 
 // Replace dashes with spaces in folder display names
 const cleanFolderNames = (node: FileTrieNode) => {
@@ -8,6 +9,9 @@ const cleanFolderNames = (node: FileTrieNode) => {
     node.displayName = node.displayName.replace(/-/g, " ")
   }
 }
+
+const isVisibleInExplorer = (node: FileTrieNode) =>
+  node.slugSegment !== "images" && node.slugSegment !== "tags" && !isPreviewPath(node)
 
 // Sort folders alphabetically, files by date (newest first)
 const sortByDate = (a: FileTrieNode, b: FileTrieNode) => {
@@ -64,6 +68,7 @@ export const defaultContentPageLayout: PageLayout = {
       component: Component.TagList(),
       condition: (page) => page.fileData.slug !== "index",
     }),
+    Component.ArticleImage(),
   ],
   left: [
     Component.DesktopOnly(Component.PageTitle()),
@@ -80,11 +85,20 @@ export const defaultContentPageLayout: PageLayout = {
       ],
     }),
     Component.ConditionalRender({
-      component: Component.Explorer({ folderDefaultState: "collapsed", sortFn: sortByDate, mapFn: cleanFolderNames }),
+      component: Component.Explorer({
+        folderDefaultState: "collapsed",
+        sortFn: sortByDate,
+        filterFn: isVisibleInExplorer,
+        mapFn: cleanFolderNames,
+      }),
       condition: (page) => page.fileData.slug === "index",
     }),
     Component.ConditionalRender({
-      component: Component.Explorer({ sortFn: sortByDate, mapFn: cleanFolderNames }),
+      component: Component.Explorer({
+        sortFn: sortByDate,
+        filterFn: isVisibleInExplorer,
+        mapFn: cleanFolderNames,
+      }),
       condition: (page) => page.fileData.slug !== "index",
     }),
     Component.ConditionalRender({
@@ -94,7 +108,7 @@ export const defaultContentPageLayout: PageLayout = {
           limit: 3,
           showTags: false,
           linkToMore: "research/logs/" as any,
-          filter: (f) => f.slug?.startsWith("research/logs/") && !f.slug?.endsWith("/index"),
+          filter: (f) => !!f.slug?.startsWith("research/logs/") && !f.slug?.endsWith("/index"),
         }),
       ),
       condition: (page) => page.fileData.slug === "index",
@@ -106,7 +120,7 @@ export const defaultContentPageLayout: PageLayout = {
           limit: 3,
           showTags: false,
           linkToMore: "research/notes/" as any,
-          filter: (f) => f.slug?.startsWith("research/notes/") && !f.slug?.endsWith("/index"),
+          filter: (f) => !!f.slug?.startsWith("research/notes/") && !f.slug?.endsWith("/index"),
           sort: (a, b) => {
             const aDate = a.frontmatter?.modified ?? a.frontmatter?.created ?? ""
             const bDate = b.frontmatter?.modified ?? b.frontmatter?.created ?? ""
@@ -146,7 +160,11 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.FontToggle() },
       ],
     }),
-    Component.Explorer({ sortFn: sortByDate, mapFn: cleanFolderNames }),
+    Component.Explorer({
+      sortFn: sortByDate,
+      filterFn: isVisibleInExplorer,
+      mapFn: cleanFolderNames,
+    }),
   ],
   right: [],
 }

@@ -7,6 +7,8 @@ import { QuartzEmitterPlugin } from "../types"
 import { toHtml } from "hast-util-to-html"
 import { write } from "./helpers"
 import { i18n } from "../../i18n"
+import { QuartzPluginData } from "../vfile"
+import { isPreview } from "../../util/visibility"
 
 export type ContentIndexMap = Map<FullSlug, ContentDetails>
 export type ContentDetails = {
@@ -28,6 +30,7 @@ interface Options {
   rssFullHtml: boolean
   rssSlug: string
   includeEmptyFiles: boolean
+  filter: (file: QuartzPluginData) => boolean
 }
 
 const defaultOptions: Options = {
@@ -37,6 +40,7 @@ const defaultOptions: Options = {
   rssFullHtml: false,
   rssSlug: "index",
   includeEmptyFiles: true,
+  filter: (file) => !isPreview(file),
 }
 
 function generateSiteMap(cfg: GlobalConfiguration, idx: ContentIndexMap): string {
@@ -102,7 +106,10 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
       for (const [tree, file] of content) {
         const slug = file.data.slug!
         const date = getDate(ctx.cfg.configuration, file.data) ?? new Date()
-        if (opts?.includeEmptyFiles || (file.data.text && file.data.text !== "")) {
+        if (
+          (opts.filter ? opts.filter(file.data) : true) &&
+          (opts?.includeEmptyFiles || (file.data.text && file.data.text !== ""))
+        ) {
           linkIndex.set(slug, {
             slug,
             filePath: file.data.relativePath!,

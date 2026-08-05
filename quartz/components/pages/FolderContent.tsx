@@ -8,6 +8,7 @@ import { i18n } from "../../i18n"
 import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
+import { isPreviewPath } from "../../util/visibility"
 import { trieFromAllFiles } from "../../util/ctx"
 
 interface FolderContentOptions {
@@ -17,11 +18,13 @@ interface FolderContentOptions {
   showFolderCount: boolean
   showSubfolders: boolean
   sort?: SortFn
+  filter: (page: QuartzPluginData) => boolean
 }
 
 const defaultOptions: FolderContentOptions = {
   showFolderCount: true,
   showSubfolders: true,
+  filter: (page) => !isPreviewPath(page),
 }
 
 export default ((opts?: Partial<FolderContentOptions>) => {
@@ -36,7 +39,7 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       return null
     }
 
-    const allPagesInFolder: QuartzPluginData[] =
+    const allPagesInFolder = (
       folder.children
         .map((node) => {
           // regular file, proceed
@@ -87,7 +90,8 @@ export default ((opts?: Partial<FolderContentOptions>) => {
             }
           }
         })
-        .filter((page) => page !== undefined) ?? []
+        .filter((page) => page !== undefined) as QuartzPluginData[]
+    ).filter(options.filter)
     const cssClasses: string[] = fileData.frontmatter?.cssclasses ?? []
     const classes = cssClasses.join(" ")
     const listProps = {
