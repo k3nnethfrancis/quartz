@@ -438,13 +438,13 @@ article img {
 
 // Transparent SIBS figures inherit the page background. In dark mode, render their
 // linework as a quiet monochrome so the light-mode charcoal does not disappear.
-[saved-theme="dark"] body[data-slug="blog/self-improving-business-systems"] article img {
+[saved-theme="dark"] body[data-slug$="self-improving-business-systems"] article img {
   filter: grayscale(1) invert(1);
   opacity: 1;
 }
 
 
-[saved-theme="dark"] body[data-slug="blog/self-improving-business-systems"] .article-image img {
+[saved-theme="dark"] body[data-slug$="self-improving-business-systems"] .article-image img {
   // Preserve the hero's ink-and-paper contrast while letting its opaque canvas
   // become native to the dark theme.
   filter: grayscale(1) invert(1);
