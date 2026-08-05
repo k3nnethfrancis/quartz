@@ -1,0 +1,27 @@
+{
+  "name": "kenneth-site-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components/index.js"
+  },
+  "quartz": {
+    "name": "site-explorer",
+    "displayName": "Site Explorer",
+    "description": "The site explorer with preview and tag folders hidden.",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "components": {
+      "Explorer": {
+        "name": "Explorer",
+        "displayName": "Explorer",
+        "description": "The site explorer with preview and tag folders hidden.",
+        "version": "1.0.0"
+      }
+    }
+  }
+}

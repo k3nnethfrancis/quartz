@@ -1,0 +1,27 @@
+{
+  "name": "kenneth-recent-notes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components/index.js"
+  },
+  "quartz": {
+    "name": "recent-notes",
+    "displayName": "Recent Notes",
+    "description": "A filtered, date-sorted list of recent notes.",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "components": {
+      "RecentNotes": {
+        "name": "RecentNotes",
+        "displayName": "Recent Notes",
+        "description": "A filtered, date-sorted list of recent notes.",
+        "version": "1.0.0"
+      }
+    }
+  }
+}
