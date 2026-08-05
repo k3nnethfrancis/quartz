@@ -1,0 +1,19 @@
+{
+  "name": "kenneth-preview-pages",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "quartz": {
+    "name": "preview-pages",
+    "displayName": "Preview Pages",
+    "category": ["transformer", "filter"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultOrder": 50,
+    "defaultEnabled": true
+  }
+}
