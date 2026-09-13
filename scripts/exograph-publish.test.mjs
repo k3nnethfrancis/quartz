@@ -61,6 +61,8 @@ test("real build preserves public/unlisted boundaries and emits a single receipt
   assert.doesNotMatch(feed, /PRIVATE-CANARY|Shared preview/)
   const manifest = JSON.parse(await readFile(receipt.manifestPath, "utf8"))
   assert.equal(manifest.deployment.status, "not-deployed")
+  const clientScripts = await Promise.all(manifest.outputFiles.filter(file => file.path.endsWith(".js")).map(file => readFile(path.join(output, file.path), "utf8")))
+  assert.equal(clientScripts.filter(script => script.includes("[Explorer] Nav event received")).length, 1, "Explorer must initialize once; duplicate scripts toggle the menu twice per click")
   assert.ok(manifest.aliases.some(alias => alias.from === "Public" && alias.to === "public"))
   assert.notEqual(run(input, output).status, 0, "must reject stale output")
   await symlink(path.join(input, "index.md"), path.join(input, "linked.md"))

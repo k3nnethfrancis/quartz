@@ -1,7 +1,7 @@
 import { Explorer as QuartzExplorer } from "@quartz-community/explorer"
 
-export const Explorer = (userOpts = {}) =>
-  QuartzExplorer({
+export const Explorer = (userOpts = {}) => {
+  const Component = QuartzExplorer({
     ...userOpts,
     filterFn: (node) => {
       if (
@@ -38,3 +38,14 @@ export const Explorer = (userOpts = {}) =>
       })
     },
   })
+
+  // One component registration emits one client script. Registering separate
+  // homepage/article instances installs duplicate toggle handlers in Quartz 5.
+  const SiteExplorer = (props) => {
+    const tree = Component(props)
+    tree.props["data-collapsed"] = props.fileData?.slug === "index" ? "collapsed" : "open"
+    return tree
+  }
+  Object.assign(SiteExplorer, Component)
+  return SiteExplorer
+}
