@@ -69,7 +69,7 @@ export async function deploySnapshot(options, dependencies = {}) {
     await git(["init", "--quiet"], temporary)
     await git(["symbolic-ref", "HEAD", `refs/heads/${branch}`], temporary)
     await git(["-c", "core.autocrlf=false", "add", "--force", "--all", "--", "publication"], temporary)
-    await git(["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", "-c", "user.name=Exograph Publishing", "-c", "user.email=publishing@exograph.local", "commit", "--quiet", "-m", `Publish reviewed snapshot ${options.snapshotHash}`], temporary)
+    await git(["-c", "core.hooksPath=/dev/null", "-c", "commit.gpgsign=false", "-c", "user.name=Exograph Publishing", "-c", "user.email=publishing@exograph.local", "commit", "--quiet", "-m", `Publish reviewed snapshot ${options.snapshotHash}\n\nRequest: ${branch}`], temporary)
     snapshotCommit = (await git(["rev-parse", "HEAD"], temporary)).trim()
     const tree = (await git(["ls-tree", "-r", "--name-only", "-z", "HEAD"], temporary)).split("\0").filter(Boolean).sort()
     if (JSON.stringify(tree) !== JSON.stringify(files.map(file => `publication/${file.path}`).sort())) throw new Error("Deployment commit does not match the reviewed file inventory")
