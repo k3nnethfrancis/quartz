@@ -6,11 +6,24 @@ import path from "node:path"
 import { spawnSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
 import { legacySlug } from "./legacy-routes.mjs"
+import { repairOutputLinks } from "./output-links.mjs"
 const adapter = fileURLToPath(new URL("./exograph-publish.mjs", import.meta.url))
 const run = (input, output, extra = []) => spawnSync(process.execPath, [adapter, "--input", input, "--output", output, "--site-url", "https://example.com", "--action", "preview", ...extra], { encoding: "utf8", timeout: 90000 })
 
 test("legacy slugs retain v4 case and punctuation rules", () => {
   assert.equal(legacySlug("Folder/My Note & More.md"), "Folder/My-Note--and--More")
+})
+
+test("unlisted-only folders disappear from generated listings and missing tags stay readable", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "publishing-links-test-"))
+  await mkdir(path.join(root, "blog"))
+  await writeFile(path.join(root, "blog/index.html"), '<div class="page-listing"><p>1 items under this folder.</p><ul><li class="section-li"><div><h3><a href="previews/">previews</a></h3></div></li></ul></div><a href="../tags/only-unlisted">organizations</a>')
+  const diagnostics = await repairOutputLinks(root, "https://example.com")
+  const html = await readFile(path.join(root, "blog/index.html"), "utf8")
+  assert.doesNotMatch(html, /previews|href=/)
+  assert.match(html, /0 items under this folder/)
+  assert.match(html, /organizations/)
+  assert.equal(diagnostics.length, 2)
 })
 
 test("real build preserves public/unlisted boundaries and emits a single receipt", async () => {
