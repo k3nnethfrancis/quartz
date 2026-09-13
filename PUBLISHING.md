@@ -57,3 +57,10 @@ workflow, and Exograph's shared Quartz runner. An explicit Publish action advanc
 one `publication` branch with a normal commit and dispatches the exact snapshot
 and engine revisions. No vault Git history is imported. Saving notes does not
 deploy, and stopping the local wait cannot cancel an already dispatched workflow.
+
+For responsive layout regression, import `scripts/mobile-layout-check.mjs` in a
+browser session and call `checkMobileLayout(tab)` on the home, blog listing and
+an article at 355px and 390px, with the menu both closed and open. It asserts
+aligned controls, no horizontal overflow, non-overlapping listing dates/titles,
+and no rendered links in the closed drawer. Also exercise search navigation
+and the theme toggle before repeating it; desktop lists retain their columns.
