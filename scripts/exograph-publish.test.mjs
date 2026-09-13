@@ -9,7 +9,10 @@ import { legacySlug } from "./legacy-routes.mjs"
 import { repairOutputLinks } from "./output-links.mjs"
 import { validateRoutes } from "./route-preflight.mjs"
 const adapter = fileURLToPath(new URL("./exograph-publish.mjs", import.meta.url))
-const run = (input, output, extra = []) => spawnSync(process.execPath, [adapter, "--input", input, "--output", output, "--site-url", "https://example.com", "--action", "preview", ...extra], { encoding: "utf8", timeout: 90000 })
+// Set this to the desktop Electron binary to exercise the complete nested
+// adapter -> Quartz CLI build with the same runtime as the app.
+const executable = process.env.EXOGRAPH_TEST_NODE_EXECUTABLE || process.execPath
+const run = (input, output, extra = []) => spawnSync(executable, [adapter, "--input", input, "--output", output, "--site-url", "https://example.com", "--action", "preview", ...extra], { encoding: "utf8", timeout: 90000, env: { ...process.env, ...(process.env.EXOGRAPH_TEST_NODE_EXECUTABLE ? { ELECTRON_RUN_AS_NODE: "1" } : {}) } })
 
 test("legacy slugs retain v4 case and punctuation rules", () => {
   assert.equal(legacySlug("Folder/My Note & More.md"), "Folder/My-Note--and--More")

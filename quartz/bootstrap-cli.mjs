@@ -72,7 +72,12 @@ async function launchTui() {
   })
 }
 
-yargs(hideBin(process.argv))
+// Electron's Node mode has Node's [executable, script, ...args] argv shape.
+// yargs otherwise treats packaged Electron as an app and keeps the script path.
+const cliArgs = process.versions.electron && process.env.ELECTRON_RUN_AS_NODE === "1"
+  ? process.argv.slice(2)
+  : hideBin(process.argv)
+yargs(cliArgs)
   .scriptName("quartz")
   .version(version)
   .usage("$0 <cmd> [args]")
