@@ -1,0 +1,62 @@
+# Install in k3nnethfrancis/kenneth-dot-computer only after preview/cutover review.
+# Dedicated snapshot commits contain publication/ (sanitized Markdown/assets only).
+name: Publish reviewed Exograph snapshot
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot_commit:
+        description: Reviewed immutable site-repository commit containing publication/
+        type: string
+        required: true
+      engine_commit:
+        description: Reviewed immutable k3nnethfrancis/quartz publishing engine commit
+        type: string
+        required: true
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require immutable revisions
+        env:
+          SNAPSHOT: ${{ inputs.snapshot_commit }}
+          ENGINE: ${{ inputs.engine_commit }}
+        run: |
+          [[ "$SNAPSHOT" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$ENGINE" =~ ^[0-9a-f]{40}$ ]]
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.snapshot_commit }}
+          path: snapshot
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: k3nnethfrancis/quartz
+          ref: ${{ inputs.engine_commit }}
+          path: engine
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+        working-directory: engine
+      - name: Build the reviewed snapshot
+        run: node engine/scripts/exograph-publish.mjs --input snapshot/publication --output public --site-url https://kenneth.computer --action prepare
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

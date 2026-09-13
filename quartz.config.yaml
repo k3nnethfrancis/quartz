@@ -100,7 +100,7 @@ plugins:
     enabled: false
     order: 92
   - source: "@quartz-community/quartz-fonts"
-    enabled: true
+    enabled: false
   - source: "@quartz-themes/core"
     enabled: false
     options:
@@ -115,11 +115,13 @@ plugins:
     enabled: false
   - source: "@quartz-community/alias-redirects"
     enabled: true
-  - source: "@quartz-community/content-index"
+  - source: ./plugins/site-index
     enabled: true
     options:
       enableSiteMap: true
       enableRSS: true
+      rssLimit: 9999
+      rssFullHtml: true
   - source: "@quartz-community/favicon"
     enabled: true
   - source: "@quartz-community/og-image"
@@ -183,16 +185,19 @@ plugins:
     layout:
       position: beforeBody
       priority: 10
+      condition: not-index
   - source: "@quartz-community/content-meta"
     enabled: true
     layout:
       position: beforeBody
       priority: 20
+      condition: not-index
   - source: "@quartz-community/tag-list"
-    enabled: false
+    enabled: true
     layout:
       position: beforeBody
       priority: 30
+      condition: not-index
   - source: ./plugins/article-image
     enabled: true
     layout:
@@ -201,6 +206,7 @@ plugins:
   - source: "@quartz-community/page-title"
     enabled: true
     layout:
+      display: desktop-only
       position: left
       priority: 10
   - source: "@quartz-community/darkmode"

@@ -73,7 +73,7 @@ export const RecentNotes = (userOpts = {}) => {
         { class: "recent-ul" },
         pages.slice(0, limit).map((page) => {
           const pageTitle = page.frontmatter?.title ?? page.slug ?? "Untitled"
-          const date = dateValue(page, sortBy)
+          const date = getDate(page)
           const tags = Array.isArray(page.frontmatter?.tags) ? page.frontmatter.tags : []
           return h(
             "li",
@@ -123,7 +123,7 @@ export const RecentNotes = (userOpts = {}) => {
         h(
           "p",
           null,
-          h("a", { href: resolveRelative(fileData.slug, linkToMore) }, `See ${remaining} more`),
+          h("a", { href: resolveRelative(fileData.slug, linkToMore) }, `See ${remaining} more →`),
         ),
     )
   }

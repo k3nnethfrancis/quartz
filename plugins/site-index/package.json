@@ -1,0 +1,22 @@
+{
+  "name": "kenneth-site-index",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "quartz": {
+    "name": "site-index",
+    "displayName": "Site Index",
+    "category": [
+      "transformer",
+      "emitter"
+    ],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultOrder": 95,
+    "defaultEnabled": true
+  }
+}

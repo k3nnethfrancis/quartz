@@ -1,4 +1,4 @@
-@use "./base.scss";
+// Quartz 5 emits base.scss in quartz-base; reimporting it here defeats component layers.
 
 // Terminal-inspired theme - minimal, sharp
 
@@ -656,3 +656,11 @@ pre {
     }
   }
 }
+
+// v4 sidebar spacing belongs to the site profile; v5 components live in a lower layer.
+.sidebar.left .recent-notes > ul.recent-ul { list-style: none; padding-left: 0; }
+.sidebar.left .recent-notes .section > .desc > h3 > a { background-color: transparent; }
+.sidebar.left .recent-notes .section > .meta { margin: 0 0 0.5rem; opacity: 0.6; }
+@media (min-width: 801px) { .sidebar.left .explorer { min-height: 150px; } }
+.sidebar.left .explorer.collapsed { min-height: 1.2rem; }
+.sidebar.left .recent-notes .section > .desc > h3 > a { text-decoration: none; }
