@@ -45,52 +45,15 @@ before source links to them can pass publication projection. Legacy mixed-case
 routes are recorded and emitted on case-sensitive hosts; a case-insensitive
 local filesystem serves the canonical file at both cases.
 
-## Deployment setup
+## Deployment ownership
 
-No network deployment is performed by this adapter. `prepare` is not Publish.
-`deployment/github-pages.yml` is the reviewed-install candidate for the existing
-site repository. Before enabling it, publish the engine branch to the Quartz
-fork, review its commit, install the workflow on the site repository, and replace
-the legacy main-push deployment only as part of an approved cutover. Preserve the
-old deployed revision for rollback.
+Exograph owns the destination setting, incremental publication branch, workflow
+installation checks, upload, dispatch, and deployment receipts. This engine
+contains no deployment command or fixed destination profile. Its only publishing
+extension is the optional build hook described above.
 
-An explicit Publish operation must commit only the approved snapshot to a
-dedicated site-repository branch under `publication/`, then dispatch that
-workflow with the exact snapshot and engine commit SHAs. It must report
-deployment setup required until the workflow is installed, and report success
-only after the Pages deployment succeeds. Neither the branch upload nor
-workflow installation/dispatch has occurred in this local implementation.
-
-### Explicit deployment adapter
-
-After the workflow has been reviewed and installed as
-`.github/workflows/exograph-publish.yml`, Exograph's Publish action may invoke:
-
-```sh
-node scripts/exograph-deploy.mjs --input /absolute/reviewed-snapshot \
-  --snapshot-hash SHA256 --engine-commit FULL_COMMIT_SHA \
-  --site-url https://kenneth.computer
-```
-
-The snapshot hash is SHA-256 of UTF-8 `JSON.stringify(files)`, without a newline,
-where `files` is the globally path-sorted array of `{path, sha256}` for every
-regular file in the snapshot. Paths use `/`; sorting uses JavaScript lexical
-comparison, not locale rules. Symlinks and Git metadata are rejected.
-
-The destination is fixed by the trusted site's `deployment` profile; callers
-cannot supply a different repository or workflow. The adapter verifies the
-clean engine checkout, exact local/remote engine commit, unchanged snapshot,
-and byte-identical installed workflow before uploading anything. Missing setup
-returns exit 2 with `status: "setup-required"`.
-
-On an explicit invocation with valid setup it creates an isolated orphan Git
-commit containing only `publication/`, pushes a unique `publication/*` branch,
-and dispatches the reviewed workflow with exact engine/snapshot commit SHAs.
-It identifies the run by its unique snapshot/engine title, waits for completion,
-and validates the Pages receipt artifact before returning `status: "deployed"`.
-A failed run, mismatched receipt, or timeout cannot return deployment success.
-Stopping the local wait does not cancel a dispatched GitHub workflow; inspect
-that run before retrying. Saving or editing notes never invokes deployment.
-
-Run `node --test scripts/exograph-deploy.test.mjs` for fake-GitHub/local-Git
-coverage. These tests never make a network mutation.
+The site repository contains sanitized `garden/` content, the reviewed Pages
+workflow, and Exograph's shared Quartz runner. An explicit Publish action advances
+one `publication` branch with a normal commit and dispatches the exact snapshot
+and engine revisions. No vault Git history is imported. Saving notes does not
+deploy, and stopping the local wait cannot cancel an already dispatched workflow.
