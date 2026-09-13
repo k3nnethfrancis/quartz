@@ -1,4 +1,4 @@
-@use "./base.scss";
+// Quartz 5 emits base.scss in quartz-base; reimporting it here defeats component layers.
 
 // Terminal-inspired theme - minimal, sharp
 
@@ -438,13 +438,13 @@ article img {
 
 // Transparent SIBS figures inherit the page background. In dark mode, render their
 // linework as a quiet monochrome so the light-mode charcoal does not disappear.
-[saved-theme="dark"] body[data-slug$="self-improving-business-systems"] article img {
+[saved-theme="dark"] body[data-slug$="/self-improving-business-systems"] article img {
   filter: grayscale(1) invert(1);
   opacity: 1;
 }
 
 
-[saved-theme="dark"] body[data-slug$="self-improving-business-systems"] .article-image img {
+[saved-theme="dark"] body[data-slug$="/self-improving-business-systems"] .article-image img {
   // Preserve the hero's ink-and-paper contrast while letting its opaque canvas
   // become native to the dark theme.
   filter: grayscale(1) invert(1);
@@ -655,4 +655,81 @@ pre {
       }
     }
   }
+}
+
+// v4 sidebar spacing belongs to the site profile; v5 components live in a lower layer.
+.sidebar.left .recent-notes > ul.recent-ul { list-style: none; padding-left: 0; }
+.sidebar.left .recent-notes .section > .desc > h3 > a { background-color: transparent; }
+.sidebar.left .recent-notes .section > .meta { margin: 0 0 0.5rem; opacity: 0.6; }
+@media (min-width: 801px) { .sidebar.left .explorer { min-height: 150px; } }
+.sidebar.left .explorer.collapsed { min-height: 1.2rem; }
+.sidebar.left .recent-notes .section > .desc > h3 > a { text-decoration: none; }
+.sidebar.left .search-button { border-color: var(--lightgray); }
+.sidebar.left .explorer h2 { font-size: 1rem; }
+@media (max-width: 800px) {
+  body[data-slug="index"] .page-header { margin-bottom: 0; }
+}
+// Quartz 5 wraps Markdown in .markdown-rendered; preserve the v4 title projection.
+article > .markdown-rendered > h1:first-of-type { display: none; }
+.page-header .tags { padding-left: 0; }
+.breadcrumb-container .breadcrumb-element p { margin: 0; }
+.page-header .content-meta { margin-top: 0; }
+.page-header .tags > li { margin: 0; }
+.page-header .tags > li > .tag-link { background: var(--highlight); padding: 0.2rem 0.4rem; font-size: 0.9rem; font-weight: 600; }
+.page-header .tags > li > span.tag-link::before { content: "#"; }
+.page-header:has(.article-image) { margin-bottom: 24px; }
+
+// Keep mobile navigation on one row, and remove the closed drawer from layout
+// and keyboard navigation instead of translating its links past the viewport.
+@media (max-width: 800px) {
+  .page > #quartz-body .sidebar.left:has(.explorer) {
+    align-items: center;
+    gap: 1rem;
+  }
+  .sidebar.left .explorer,
+  .sidebar.left .explorer.collapsed {
+    min-height: 34px;
+    height: 34px;
+    margin: 0;
+    align-self: center;
+  }
+  .sidebar.left > .flex-component {
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .sidebar.left > .flex-component > div {
+    display: flex;
+    align-items: center;
+  }
+  .sidebar.left .explorer .explorer-content {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 4rem 1rem 2rem;
+    transform: none;
+  }
+  .sidebar.left .explorer.collapsed > .explorer-content {
+    display: none;
+  }
+  .sidebar.left .explorer:not(.collapsed) > .explorer-content {
+    display: block;
+  }
+  .page-listing .section-li > .section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+  .page-listing .section > .meta,
+  .page-listing .section > .desc,
+  .page-listing .section > .tags {
+    grid-column: 1;
+    margin: 0;
+  }
+  .page-listing .section > .meta { grid-row: 1; }
+  .page-listing .section > .desc { grid-row: 2; }
+  .page-listing .section > .tags { grid-row: 3; }
+  .page-listing .section > .desc h3 { margin: 0; }
 }

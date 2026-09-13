@@ -1,0 +1,27 @@
+{
+  "name": "kenneth-article-image",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components/index.js"
+  },
+  "quartz": {
+    "name": "article-image",
+    "displayName": "Article Image",
+    "description": "Render an article hero image from frontmatter.",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "components": {
+      "ArticleImage": {
+        "name": "ArticleImage",
+        "displayName": "Article Image",
+        "description": "Render an article hero image from frontmatter.",
+        "version": "1.0.0"
+      }
+    }
+  }
+}

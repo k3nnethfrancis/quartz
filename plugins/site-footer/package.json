@@ -1,0 +1,27 @@
+{
+  "name": "kenneth-site-footer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components/index.js"
+  },
+  "quartz": {
+    "name": "site-footer",
+    "displayName": "Site Footer",
+    "description": "Kenneth's site footer and profile links.",
+    "category": ["component"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "components": {
+      "Footer": {
+        "name": "Footer",
+        "displayName": "Site Footer",
+        "description": "Kenneth's site footer and profile links.",
+        "version": "1.0.0"
+      }
+    }
+  }
+}
