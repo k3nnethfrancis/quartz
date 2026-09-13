@@ -670,3 +670,11 @@ pre {
   .sidebar.left .explorer, .sidebar.left .explorer.collapsed { min-height: 150px; }
   body[data-slug="index"] .page-header { margin-bottom: 0; }
 }
+// Quartz 5 wraps Markdown in .markdown-rendered; preserve the v4 title projection.
+article > .markdown-rendered > h1:first-of-type { display: none; }
+.page-header .tags { padding-left: 0; }
+.breadcrumb-container .breadcrumb-element p { margin: 0; }
+.page-header .content-meta { margin-top: 0; }
+.page-header .tags > li { margin: 0; }
+.page-header .tags > li > .tag-link { background: var(--highlight); padding: 0.2rem 0.4rem; font-size: 0.9rem; font-weight: 600; }
+.page-header .tags > li > span.tag-link::before { content: "#"; }

@@ -47,7 +47,9 @@ export async function repairOutputLinks(root, siteUrl) {
             continue
           }
           diagnostics.push({ page: relative, href, reason: "No published target" })
-          node.children.splice(index, 1, ...(child.children ?? []))
+          if (child.properties?.className?.includes("tag-link")) {
+            node.children[index] = { type: "element", tagName: "span", properties: { className: ["tag-link"] }, children: child.children ?? [] }
+          } else node.children.splice(index, 1, ...(child.children ?? []))
           if (node.tagName === "h3") node.siteMissingTitle = true
           changed = true
         }
