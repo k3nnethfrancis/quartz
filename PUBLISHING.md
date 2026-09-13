@@ -20,6 +20,16 @@ Both emit one JSON receipt on stdout and build diagnostics on stderr. Errors exi
 nonzero. Input is hash-checked again after building; symlinks are rejected. The
 private build receipt is a sibling of the output, never inside the public site.
 
+`scripts/exograph-publish.mjs` is this theme's optional build hook. Exograph can
+also build a standard Quartz 5 checkout without that file, using its own Quartz
+runner. This theme keeps the hook because it validates route collisions before
+building, emits the site's legacy v4 case aliases, and repairs generated links
+to unlisted-only folders and tags afterward. These helpers, the generated-route
+allowlist, and all Kenneth-specific rendering stay in this repository. A custom
+theme does not need to copy them unless it needs those behaviors. The hook uses
+the same immutable snapshot and fresh output boundary as the default runner;
+it never decides which private vault files are eligible for publication.
+
 The site profile retains IBM Plex Mono, light/dark palettes, font toggle,
 homepage/recent sections, image treatment, and footer. Ordinary drafts remain
 excluded; `draft: true` plus `preview: true` (including string booleans) is a
