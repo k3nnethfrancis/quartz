@@ -45,5 +45,12 @@
     "tags/technology",
     "tags/tools",
     "tags/web3"
-  ]
+  ],
+  "deployment": {
+    "repository": "k3nnethfrancis/kenneth-dot-computer",
+    "engineRepository": "k3nnethfrancis/quartz",
+    "workflow": "exograph-publish.yml",
+    "workflowRef": "main",
+    "siteUrl": "https://kenneth.computer"
+  }
 }

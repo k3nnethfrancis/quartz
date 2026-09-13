@@ -7,11 +7,21 @@ import { spawnSync } from "node:child_process"
 import { fileURLToPath } from "node:url"
 import { legacySlug } from "./legacy-routes.mjs"
 import { repairOutputLinks } from "./output-links.mjs"
+import { validateRoutes } from "./route-preflight.mjs"
 const adapter = fileURLToPath(new URL("./exograph-publish.mjs", import.meta.url))
 const run = (input, output, extra = []) => spawnSync(process.execPath, [adapter, "--input", input, "--output", output, "--site-url", "https://example.com", "--action", "preview", ...extra], { encoding: "utf8", timeout: 90000 })
 
 test("legacy slugs retain v4 case and punctuation rules", () => {
   assert.equal(legacySlug("Folder/My Note & More.md"), "Folder/My-Note--and--More")
+})
+
+test("case, whitespace, and alias collisions fail before Quartz can overwrite a page", async () => {
+  for (const [first, second, body] of [["a b.md", "a-b.md", "# First"], ["Page.md", "page.md", "# First"], ["one.md", "two.md", "---\naliases: [two]\n---\n# First"]]) {
+    const root = await mkdtemp(path.join(os.tmpdir(), "route-collision-"))
+    await writeFile(path.join(root, first), body)
+    await writeFile(path.join(root, second), "# Second")
+    await assert.rejects(validateRoutes(root, [{ path: first }, { path: second }]), /URL collision/)
+  }
 })
 
 test("unlisted-only folders disappear from generated listings and missing tags stay readable", async () => {

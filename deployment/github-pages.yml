@@ -1,6 +1,7 @@
 # Install in k3nnethfrancis/kenneth-dot-computer only after preview/cutover review.
 # Dedicated snapshot commits contain publication/ (sanitized Markdown/assets only).
 name: Publish reviewed Exograph snapshot
+run-name: Publish ${{ inputs.snapshot_commit }} with ${{ inputs.engine_commit }}
 on:
   workflow_dispatch:
     inputs:
@@ -60,3 +61,17 @@ jobs:
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
+
+      - name: Record completed deployment
+        env:
+          SNAPSHOT_COMMIT: ${{ inputs.snapshot_commit }}
+          ENGINE_COMMIT: ${{ inputs.engine_commit }}
+          DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          node -e 'require("fs").writeFileSync("deployment.json", JSON.stringify({snapshotCommit:process.env.SNAPSHOT_COMMIT,engineCommit:process.env.ENGINE_COMMIT,deploymentUrl:process.env.DEPLOYMENT_URL,runId:process.env.RUN_ID}))'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exograph-deployment
+          path: deployment.json
+          retention-days: 14

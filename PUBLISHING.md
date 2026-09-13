@@ -50,3 +50,37 @@ workflow with the exact snapshot and engine commit SHAs. It must report
 deployment setup required until the workflow is installed, and report success
 only after the Pages deployment succeeds. Neither the branch upload nor
 workflow installation/dispatch has occurred in this local implementation.
+
+### Explicit deployment adapter
+
+After the workflow has been reviewed and installed as
+`.github/workflows/exograph-publish.yml`, Exograph's Publish action may invoke:
+
+```sh
+node scripts/exograph-deploy.mjs --input /absolute/reviewed-snapshot \
+  --snapshot-hash SHA256 --engine-commit FULL_COMMIT_SHA \
+  --site-url https://kenneth.computer
+```
+
+The snapshot hash is SHA-256 of UTF-8 `JSON.stringify(files)`, without a newline,
+where `files` is the globally path-sorted array of `{path, sha256}` for every
+regular file in the snapshot. Paths use `/`; sorting uses JavaScript lexical
+comparison, not locale rules. Symlinks and Git metadata are rejected.
+
+The destination is fixed by the trusted site's `deployment` profile; callers
+cannot supply a different repository or workflow. The adapter verifies the
+clean engine checkout, exact local/remote engine commit, unchanged snapshot,
+and byte-identical installed workflow before uploading anything. Missing setup
+returns exit 2 with `status: "setup-required"`.
+
+On an explicit invocation with valid setup it creates an isolated orphan Git
+commit containing only `publication/`, pushes a unique `publication/*` branch,
+and dispatches the reviewed workflow with exact engine/snapshot commit SHAs.
+It identifies the run by its unique snapshot/engine title, waits for completion,
+and validates the Pages receipt artifact before returning `status: "deployed"`.
+A failed run, mismatched receipt, or timeout cannot return deployment success.
+Stopping the local wait does not cancel a dispatched GitHub workflow; inspect
+that run before retrying. Saving or editing notes never invokes deployment.
+
+Run `node --test scripts/exograph-deploy.test.mjs` for fake-GitHub/local-Git
+coverage. These tests never make a network mutation.

@@ -6,6 +6,7 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
 
+import { validateRoutes } from "./route-preflight.mjs"
 import { repairOutputLinks } from "./output-links.mjs"
 import { preserveLegacyRoutes } from "./legacy-routes.mjs"
 
@@ -45,6 +46,7 @@ try {
     if (!stat.isDirectory() || stat.isSymbolicLink() || (await readdir(output)).length) throw new Error("Output must be a fresh directory")
   } catch (error) { if (error.code !== "ENOENT") throw error }
   const before = await manifest(input)
+  await validateRoutes(input, before)
   staging = await mkdtemp(path.join(path.dirname(output), ".quartz-build-"))
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [path.join(engine, "quartz/bootstrap-cli.mjs"), "build", "--directory", input, "--output", staging], { cwd: engine, env: { ...process.env, TZ: "UTC", EXOGRAPH_PUBLISH_SITE_URL: site.href, EXOGRAPH_PUBLISH_ACTION: values.action }, stdio: ["ignore", "pipe", "pipe"] })

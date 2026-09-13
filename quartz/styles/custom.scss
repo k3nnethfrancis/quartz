@@ -678,3 +678,4 @@ article > .markdown-rendered > h1:first-of-type { display: none; }
 .page-header .tags > li { margin: 0; }
 .page-header .tags > li > .tag-link { background: var(--highlight); padding: 0.2rem 0.4rem; font-size: 0.9rem; font-weight: 600; }
 .page-header .tags > li > span.tag-link::before { content: "#"; }
+.page-header:has(.article-image) { margin-bottom: 24px; }
